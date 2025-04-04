@@ -1,26 +1,27 @@
 {
-  "name": "@soarlin/angular-color-thief",
-  "version": "1.0.3",
+  "name": "ng-color-thief",
+  "version": "2.0.0",
   "author": "Soar Lin (https://github.com/SoarLin)",
   "description": "Rewirte ColorThief as a Angular service",
   "peerDependencies": {
-    "@angular/common": "^11.2.14",
-    "@angular/core": "^11.2.14",
-    "quantize": "^1.0.2"
+    "@angular/common": "^19.0.0",
+    "@angular/core": "^19.0.0"
   },
   "dependencies": {
-    "tslib": "^2.0.0"
+    "quantize": "^1.0.2",
+    "tslib": "^2.6.2"
   },
+  "sideEffects": false,
   "repository": {
     "type": "git",
-    "url": "git@github.com:SoarLin/ng-color-thief.git"
+    "url": "https://github.com/yourusername/ng-color-thief.git"
   },
   "license": "MIT",
   "keywords": [
-    "color-thief",
+    "angular",
     "color",
     "palette",
-    "image",
-    "thief"
+    "color-thief",
+    "image"
   ]
 }
