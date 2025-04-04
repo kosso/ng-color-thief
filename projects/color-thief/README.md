@@ -1,96 +1,126 @@
-# ColorThief
+# @soarlin/angular-color-thief
 
-This library was adapted from [ColorThief](https://github.com/lokesh/color-thief), adjust to an Angular service for usage.
+An Angular service for extracting dominant colors and color palettes from images. Rewritten based on the concept of [Color Thief](http://lokeshdhakar.com/projects/color-thief/).
+
+## Features
+
+- Extract dominant color from images
+- Generate color palette from images
+- Support loading images from URLs
+- Full TypeScript support
+- Angular v19+ support
 
 ## Installation
 
-**Install with [npm](https://www.npmjs.com/):**
-```sh
-npm i @soarlin/angular-color-thief
-```
+```bash
+# Using npm
+npm install @soarlin/angular-color-thief
 
-Install with [yarn](https://yarnpkg.com/):
-```sh
+# Using yarn
 yarn add @soarlin/angular-color-thief
 ```
 
-## API methods
-
-```js
-getPaletteFromUrl(imageUrl: string, count = 5, quality = 10): Promise<number[][]>
-```
-**getPaletteFromUrl**
-* imageUrl: image url
-* count: palette size
-* quality: quality number, bigger than 0
-
-```js
-getPalette(img: HTMLImageElement, colorCount: number, quality = 10): number[][]
-```
-**getPalette**
-* img: an [HTMLImageElement](https://developer.mozilla.org/zh-TW/docs/Web/API/HTMLImageElement)
-* colorCount: palette size
-* quality: quality number, bigger than 0
-
-
-```js
-getColor(img: HTMLImageElement, quality = 10): number[]
-```
-**getColor**
-* img: an [HTMLImageElement](https://developer.mozilla.org/zh-TW/docs/Web/API/HTMLImageElement)
-* quality: quality number, bigger than 0
-
-
 ## Usage
 
-1. import to your component
-2. inject and usage in your component
+### 1. Import Module
 
-**my-component.component.ts**
 ```typescript
+import { ColorThiefModule } from '@soarlin/angular-color-thief';
+
+@NgModule({
+  imports: [ColorThiefModule]
+})
+export class AppModule { }
+
+// Or in a standalone component
+@Component({
+  // ...
+  imports: [ColorThiefModule]
+})
+```
+
+### 2. Use in Component
+
+```typescript
+import { Component } from '@angular/core';
 import { ColorThiefService } from '@soarlin/angular-color-thief';
 
 @Component({
-  selector: 'app-my-component',
-  // ...
+  selector: 'app-root',
+  template: `
+    <img #sourceImage [src]="imageUrl" (load)="onImageLoad(sourceImage)">
+    <div *ngIf="dominantColor" [style.background-color]="'rgb(' + dominantColor.join(',') + ')'">
+      Dominant Color
+    </div>
+    <div *ngFor="let color of palette"
+         [style.background-color]="'rgb(' + color.join(',') + ')'">
+      Palette Color
+    </div>
+  `
 })
-export class MyComponent implements OnInit {
-  // ...
+export class AppComponent {
+  imageUrl = 'your-image-url.jpg';
+  dominantColor: [number, number, number] | null = null;
+  palette: [number, number, number][] | null = null;
 
-  constructor(private colorThiefService: ColorThiefService) { }
+  constructor(private colorThief: ColorThiefService) {}
 
-  ngOnInit(): void {
-    // method 1: get the dominant color from an image
-    const image = new Image();
-    image.src = 'path-to-your-local-image';
-    image.onload = () => {
-      const color = this.colorThiefService.getColor(image);
-      // color is an array of [r, g, b] values
-      console.log(color);
-    };
+  onImageLoad(imageElement: HTMLImageElement) {
+    // Get dominant color
+    this.dominantColor = this.colorThief.getColor(imageElement);
 
-    // method 2: get palette colors from an image
-    const image2 = new Image();
-    image2.src = 'path-to-your-local-image';
-    image2.onload = () => {
-      const palette = this.colorThiefService.getPalette(image2, 5);
-      // palette is an array of [[r, g, b], [r, g, b], ...] values
-      console.log(palette);
-    };
+    // Get color palette (default 10 colors)
+    this.palette = this.colorThief.getPalette(imageElement);
+  }
 
-    // method 3: get palette colors from image url
-    const imgUrl = 'path-to-your-local-image-url';
-    this.colorThiefService.getPaletteFromUrl(imgUrl, 5)
-      .then(palette => {
-        // palette is an array of [[r, g, b], [r, g, b], ...] values
-        console.log(palette);
-      }).catch(err => {
-        console.log(err);
-      });
+  // Or get palette directly from URL
+  async loadPaletteFromUrl() {
+    try {
+      this.palette = await this.colorThief.getPaletteFromUrl(this.imageUrl);
+    } catch (error) {
+      console.error('Failed to load image:', error);
+    }
   }
 }
 ```
 
-## References
-* [Color Thief](https://github.com/lokesh/color-thief)
-* [quantize](https://github.com/olivierlesnicki/quantize)
+## API
+
+### ColorThiefService
+
+#### getColor(sourceImage: HTMLImageElement, quality?: number): [number, number, number]
+
+Extract the dominant color from an image. Returns an RGB color array.
+
+- `sourceImage`: The image element
+- `quality`: Sampling quality (1 is highest quality, 10 is default)
+
+#### getPalette(sourceImage: HTMLImageElement, colorCount?: number, quality?: number): [number, number, number][]
+
+Extract a color palette from an image. Returns an array of RGB color arrays.
+
+- `sourceImage`: The image element
+- `colorCount`: Number of colors to extract (default is 10)
+- `quality`: Sampling quality (1 is highest quality, 10 is default)
+
+#### getPaletteFromUrl(imageUrl: string, count?: number, quality?: number): Promise<[number, number, number][]>
+
+Extract a color palette from an image URL. Returns a Promise that resolves to an array of RGB color arrays.
+
+- `imageUrl`: URL of the image
+- `count`: Number of colors to extract (default is 5)
+- `quality`: Sampling quality (1 is highest quality, 10 is default)
+
+## Important Notes
+
+- Images must be from the same domain or have appropriate CORS settings
+- It's recommended to call color extraction methods after the image is fully loaded
+- Lower quality values result in longer processing time but more accurate results
+
+## License
+
+MIT
+
+## Author
+
+Soar Lin (https://github.com/SoarLin)
