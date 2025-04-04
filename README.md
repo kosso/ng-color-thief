@@ -1,4 +1,4 @@
-# @soarlin/ng-color-thief
+# @soarlin/angular-color-thief
 
 An Angular service for extracting dominant colors and color palettes from images. Rewritten based on the concept of [Color Thief](http://lokeshdhakar.com/projects/color-thief/).
 
@@ -14,10 +14,10 @@ An Angular service for extracting dominant colors and color palettes from images
 
 ```bash
 # Using npm
-npm install @soarlin/ng-color-thief
+npm install @soarlin/angular-color-thief
 
 # Using yarn
-yarn add @soarlin/ng-color-thief
+yarn add @soarlin/angular-color-thief
 ```
 
 ## Usage
@@ -25,7 +25,7 @@ yarn add @soarlin/ng-color-thief
 ### 1. Import Module
 
 ```typescript
-import { ColorThiefModule } from '@soarlin/ng-color-thief';
+import { ColorThiefModule } from '@soarlin/angular-color-thief';
 
 @NgModule({
   imports: [ColorThiefModule]
@@ -43,7 +43,7 @@ export class AppModule { }
 
 ```typescript
 import { Component } from '@angular/core';
-import { ColorThiefService } from '@soarlin/ng-color-thief';
+import { ColorThiefService } from '@soarlin/angular-color-thief';
 
 @Component({
   selector: 'app-root',
