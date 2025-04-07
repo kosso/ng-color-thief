@@ -1,4 +1,5 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Inject } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
 import quantize from 'quantize';
 
 type RGB = [number, number, number];
@@ -12,8 +13,8 @@ export class ColorThiefService {
   private pixelCount: number;
   private quality: number;
 
-  constructor() {
-    this.canvas = document.createElement('canvas');
+  constructor(@Inject(DOCUMENT) private document: Document) {
+    this.canvas = this.document.createElement('canvas');
     this.context = this.canvas.getContext('2d')!;
     this.pixelCount = 10000;
     this.quality = 10;
